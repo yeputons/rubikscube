@@ -1,16 +1,11 @@
 package net.yeputons.android239.rubikscube;
 
-import android.app.Activity;
-import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import min3d.core.RendererActivity;
-import min3d.objectPrimitives.Box;
-import min3d.vos.Color4;
 import min3d.vos.Light;
-import min3d.vos.LightType;
 import min3d.vos.Number3d;
 
 import java.util.ArrayList;
@@ -124,9 +119,33 @@ public class DefaultActivity extends RendererActivity implements View.OnTouchLis
         for (;;) {
             boolean found = false;
 
+            final int dx[] = { 0, 1, 1, 2 };
+            final int dy[] = { 1, 0, 2, 1 };
+
+            for (int i = 0; i < 4; i++, cur.rotateY()) {
+                for (int i2 = 0; i2 < 4; i2++)
+                    if (cur.getColor(RubiksCube.FRONT, dx[i2], dy[i2]) == topColor) {
+                        found = true;
+                        while (cur.getColor(RubiksCube.TOP, 1, 2) == topColor) {
+                            cur.performRotation(RubiksCube.TOP);
+                        }
+                        while (cur.getColor(RubiksCube.FRONT, 0, 1) != topColor) {
+                            cur.performRotation(RubiksCube.FRONT);
+                        }
+                        while (cur.getColor(RubiksCube.TOP, 0, 1) == topColor) {
+                            cur.performRotation(RubiksCube.TOP);
+                        }
+                        if (cur.getColor(RubiksCube.FRONT, 0, 1) != topColor)
+                            throw new AssertionError("Botva2");
+                        cur.performRotation(RubiksCube.LEFT);
+                        cur.performRotation(RubiksCube.LEFT);
+                        cur.performRotation(RubiksCube.LEFT);
+                        if (cur.getColor(RubiksCube.TOP, 0, 1) != topColor)
+                            throw new AssertionError("Botva2");
+                    }
+            }
+
             {
-                final int dx[] = { 0, 1, 1, 2 };
-                final int dy[] = { 1, 0, 2, 1 };
                 final int df[] = { RubiksCube.LEFT, RubiksCube.BACK, RubiksCube.FRONT, RubiksCube.RIGHT };
                 for (int i = 0; i < 4; i++) {
                     if (cur.getColor(RubiksCube.BOTTOM, dx[i], dy[i]) == topColor) {
@@ -141,6 +160,50 @@ public class DefaultActivity extends RendererActivity implements View.OnTouchLis
 
             if (!found) break;
         }
+        for (;;) {
+            boolean found = false;
+
+            for (int i = 0; i < 4; i++, cur.rotateY()) {
+                if (cur.getColor(RubiksCube.FRONT, 1, 2) != cur.getColor(RubiksCube.FRONT, 1, 1)) {
+                    found = true;
+                    cur.performRotation(RubiksCube.FRONT);
+                    cur.performRotation(RubiksCube.FRONT);
+
+                    int cnt = 0;
+                    for (;;) {
+                        while (cur.getColor(RubiksCube.FRONT, 1, 0) != cur.getColor(RubiksCube.FRONT, 1, 1)) {
+                            cnt++;
+                            cur.performRotation(RubiksCube.BOTTOM);
+                            cur.rotateY();
+                            cur.rotateY();
+                            cur.rotateY();
+                        }
+                        cur.performRotation(RubiksCube.FRONT);
+                        cur.performRotation(RubiksCube.FRONT);
+                        if (cnt % 4 == 0) break;
+                    }
+                }
+            }
+            if (!found) break;
+        }
+        int ptr = 0;
+        for (int i = 0; i < sequence.size(); i++) {
+            int same = 1;
+            for (int i2 = ptr - 1; i2 >= 0 && same < 4; i2--)
+                if (sequence.get(i) == sequence.get(i2)) {
+                    same++;
+                } else {
+                    break;
+                }
+            if (same == 4) {
+                ptr -= 3;
+            } else {
+                sequence.set(ptr, sequence.get(i));
+                ptr++;
+            }
+        }
+        for (int i = sequence.size() - 1; i >= ptr; i--)
+            sequence.remove(i);
     }
 
     @Override

@@ -202,9 +202,9 @@ public class DefaultActivity extends RendererActivity implements View.OnTouchLis
                 break;
             }
         }
-        nextEq %= 4;
         int face = sequence.get(seqPos);
         seqPos += nextEq;
+        nextEq %= 4;
 
         switch (nextEq) {
             case 0: break;

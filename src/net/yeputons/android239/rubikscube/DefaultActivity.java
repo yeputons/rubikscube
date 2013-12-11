@@ -64,13 +64,13 @@ public class DefaultActivity extends RendererActivity implements View.OnTouchLis
             case 2:
                 cube.stopRotation();
                 for (int i = 0; i < 1000; i++) {
-                    cube.performRotation(rnd.nextInt(6));
+                    cube.performRotation(rnd.nextInt(6), rnd.nextInt(2) * 2 - 1);
                 }
                 cube.commitRotation();
                 break;
             case 3:
                 cube.stopRotation();
-                cube.startRotation(rnd.nextInt(6));
+                cube.startRotation(rnd.nextInt(6), rnd.nextInt(2) * 2 - 1);
                 break;
             case 4:
                 buildCube();
@@ -209,7 +209,26 @@ public class DefaultActivity extends RendererActivity implements View.OnTouchLis
     @Override
     public void onCubeRotationDone() {
         if (sequence == null || seqPos >= sequence.size()) return;
-        cube.startRotation(sequence.get(seqPos));
-        seqPos++;
+
+        int nextEq = 0;
+        while (seqPos + nextEq < sequence.size()) {
+            if (sequence.get(seqPos) == sequence.get(seqPos + nextEq)) {
+                nextEq++;
+            } else {
+                break;
+            }
+        }
+        nextEq %= 4;
+        int face = sequence.get(seqPos);
+        seqPos += nextEq;
+
+        switch (nextEq) {
+            case 0: break;
+            case 2:
+                seqPos--;
+                // note
+            case 1: cube.startRotation(face,  1); break;
+            case 3: cube.startRotation(face, -1); break;
+        }
     }
 }

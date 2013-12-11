@@ -32,6 +32,7 @@ public class RubiksCube extends Object3dContainer implements Cloneable {
 
     protected int curTurnFace = -1;
     protected int curTurnProgress = 90;
+    protected int curTurnDirection = 0;
 
     public RubiksCube() {
         super();
@@ -108,11 +109,15 @@ public class RubiksCube extends Object3dContainer implements Cloneable {
         }
     }
 
-    public void startRotation(int face) {
+    public void startRotation(int face, int direction) {
         if (curTurnFace >= 0) {
             throw new RotationIsInProgressException();
         }
+        if (direction != 1 && direction != -1) {
+            throw new IllegalArgumentException("direction should be either -1 or +1");
+        }
         curTurnFace = face;
+        curTurnDirection = direction;
         curTurnProgress = 0;
     }
     public void stopRotation() {
@@ -121,9 +126,17 @@ public class RubiksCube extends Object3dContainer implements Cloneable {
         recreateBoxes();
     }
 
-    public void performRotation(int face) {
+    public void performRotation(int face, int direction) {
         if (curTurnFace >= 0) {
             throw new RotationIsInProgressException();
+        }
+        if (direction != 1 && direction != -1) {
+            throw new IllegalArgumentException("direction should be either -1 or +1");
+        }
+        if (direction == -1) {
+            for (int i = 0; i < 3; i++)
+                performRotation(face, 1);
+            return;
         }
         rotateFace(cols[face], face == FRONT || face == BACK ? 1 : -1);
         if (face == LEFT || face == RIGHT)
@@ -146,7 +159,7 @@ public class RubiksCube extends Object3dContainer implements Cloneable {
             if (curTurnFace >= 0) {
                 int tmp = curTurnFace;
                 curTurnFace = -1;
-                performRotation(tmp);
+                performRotation(tmp, curTurnDirection);
                 commitRotation();
                 if (listener != null) {
                     listener.onCubeRotationDone();
@@ -161,11 +174,11 @@ public class RubiksCube extends Object3dContainer implements Cloneable {
                     if ((facesMsk[z][y][x] & (1 << curTurnFace)) != 0) {
                         float rotX = 0, rotY = 0, rotZ = 0;
                         if (curTurnFace == RIGHT || curTurnFace == LEFT)
-                            rotX = 2;
+                            rotX = 2 * curTurnDirection;
                         if (curTurnFace == TOP || curTurnFace == BOTTOM)
-                            rotY = 2;
+                            rotY = 2 * curTurnDirection;
                         if (curTurnFace == FRONT || curTurnFace == BACK)
-                            rotZ = 2;
+                            rotZ = 2 * curTurnDirection;
                         boxes[z][y][x].position().rotateX((float) (rotX * Math.PI / 180));
                         boxes[z][y][x].position().rotateY((float) (rotY * Math.PI / 180));
                         boxes[z][y][x].position().rotateZ((float) (rotZ * Math.PI / 180));

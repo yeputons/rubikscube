@@ -70,7 +70,7 @@ public class SequenceRecorder {
         OriginalFaceInfo info = currentRotation[face];
         int cnt = info.isReversed ? 3 : 1;
         for (int i = 0; i < cnt; i++) {
-            cube.performRotation(info.originalFace);
+            cube.performRotation(info.originalFace, 1);
             sequence.add(info.originalFace);
         }
     }

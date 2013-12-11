@@ -154,6 +154,12 @@ public class RubiksCube extends Object3dContainer implements Cloneable {
         return cols[face][b][a];
     }
 
+    private static final int ROTATION_SPEED = 5;
+    static {
+        if (90 % ROTATION_SPEED != 0)
+            throw new AssertionError("ROTATION_SPEED should be a divisor of 90");
+    }
+
     public void update() {
         if (curTurnProgress >= 90) {
             if (curTurnFace >= 0) {
@@ -174,11 +180,11 @@ public class RubiksCube extends Object3dContainer implements Cloneable {
                     if ((facesMsk[z][y][x] & (1 << curTurnFace)) != 0) {
                         float rotX = 0, rotY = 0, rotZ = 0;
                         if (curTurnFace == RIGHT || curTurnFace == LEFT)
-                            rotX = 2 * curTurnDirection;
+                            rotX = ROTATION_SPEED * curTurnDirection;
                         if (curTurnFace == TOP || curTurnFace == BOTTOM)
-                            rotY = 2 * curTurnDirection;
+                            rotY = ROTATION_SPEED * curTurnDirection;
                         if (curTurnFace == FRONT || curTurnFace == BACK)
-                            rotZ = 2 * curTurnDirection;
+                            rotZ = ROTATION_SPEED * curTurnDirection;
                         boxes[z][y][x].position().rotateX((float) (rotX * Math.PI / 180));
                         boxes[z][y][x].position().rotateY((float) (rotY * Math.PI / 180));
                         boxes[z][y][x].position().rotateZ((float) (rotZ * Math.PI / 180));
@@ -188,7 +194,7 @@ public class RubiksCube extends Object3dContainer implements Cloneable {
                         boxes[z][y][x].rotation().z += rotZ;
                     }
                 }
-        curTurnProgress += 2;
+        curTurnProgress += ROTATION_SPEED;
     }
 
     private void rotateBorderX(int x) {

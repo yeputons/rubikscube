@@ -116,6 +116,7 @@ public class DefaultActivity extends RendererActivity implements View.OnTouchLis
         cube.stopRotation();
         final int topColor = cube.getColor(RubiksCube.TOP, 1, 1);
         SequenceRecorder cur = new SequenceRecorder(cube, sequence);
+        // Building top cross
         for (;;) {
             boolean found = false;
 
@@ -160,6 +161,7 @@ public class DefaultActivity extends RendererActivity implements View.OnTouchLis
 
             if (!found) break;
         }
+        // Extending the cross
         for (;;) {
             boolean found = false;
 
@@ -186,24 +188,6 @@ public class DefaultActivity extends RendererActivity implements View.OnTouchLis
             }
             if (!found) break;
         }
-        int ptr = 0;
-        for (int i = 0; i < sequence.size(); i++) {
-            int same = 1;
-            for (int i2 = ptr - 1; i2 >= 0 && same < 4; i2--)
-                if (sequence.get(i) == sequence.get(i2)) {
-                    same++;
-                } else {
-                    break;
-                }
-            if (same == 4) {
-                ptr -= 3;
-            } else {
-                sequence.set(ptr, sequence.get(i));
-                ptr++;
-            }
-        }
-        for (int i = sequence.size() - 1; i >= ptr; i--)
-            sequence.remove(i);
     }
 
     @Override

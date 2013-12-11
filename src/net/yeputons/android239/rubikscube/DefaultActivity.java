@@ -204,13 +204,13 @@ public class DefaultActivity extends RendererActivity implements View.OnTouchLis
         }
         int face = sequence.get(seqPos);
         seqPos += nextEq;
-        nextEq %= 4;
 
-        switch (nextEq) {
+        switch (nextEq % 4) {
             case 0: break;
             case 2:
                 seqPos--;
-                // note
+                cube.startRotation(face, 1);
+                break;
             case 1: cube.startRotation(face,  1); break;
             case 3: cube.startRotation(face, -1); break;
         }

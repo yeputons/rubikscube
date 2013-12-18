@@ -109,6 +109,9 @@ public class RubiksCube extends Object3dContainer implements Cloneable {
         }
     }
 
+    public boolean isRotationInProgress() {
+        return curTurnFace >= 0;
+    }
     public void startRotation(int face, int direction) {
         if (curTurnFace >= 0) {
             throw new RotationIsInProgressException();

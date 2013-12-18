@@ -281,15 +281,18 @@ public class DefaultActivity extends RendererActivity implements View.OnTouchLis
         if (sequence == null || seqPos >= sequence.size()) return;
 
         int nextEq = 0;
-        while (seqPos + nextEq < sequence.size()) {
-            if (sequence.get(seqPos) == sequence.get(seqPos + nextEq)) {
-                nextEq++;
-            } else {
-                break;
+        int face = -1;
+        while (nextEq % 4 == 0 && seqPos < sequence.size()) {
+            while (seqPos + nextEq < sequence.size()) {
+                if (sequence.get(seqPos) == sequence.get(seqPos + nextEq)) {
+                    nextEq++;
+                } else {
+                    break;
+                }
             }
+            face = sequence.get(seqPos);
+            seqPos += nextEq;
         }
-        int face = sequence.get(seqPos);
-        seqPos += nextEq;
 
         switch (nextEq % 4) {
             case 0: break;

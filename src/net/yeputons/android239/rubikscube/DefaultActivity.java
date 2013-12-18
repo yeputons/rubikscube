@@ -4,6 +4,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import min3d.core.RendererActivity;
 import min3d.vos.Light;
 import min3d.vos.Number3d;
@@ -25,6 +27,36 @@ public class DefaultActivity extends RendererActivity implements View.OnTouchLis
         scene.camera().position = new Number3d(4, 5, 8);
         scene.camera().target = new Number3d(0, 0, 0);
         scene.lights().add(new Light());
+    }
+
+    @Override
+    protected void onCreateSetContentView()
+    {
+        setContentView(R.layout.main);
+        LinearLayout main = (LinearLayout) findViewById(R.id.mainLayout);
+        main.addView(_glSurfaceView);
+
+        LinearLayout buttonsLayout = (LinearLayout) findViewById(R.id.buttonsLayout);
+        final String[] names = {
+                "Front",
+                "Right",
+                "Back",
+                "Left",
+                "Top",
+                "Bottom"
+        };
+        for (int i = 0; i < 6; i++) {
+            Button btn = new Button(this);
+            btn.setText(names[i]);
+            final int id = i;
+            btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    cube.startRotation(id, +1);
+                }
+            });
+            buttonsLayout.addView(btn);
+        }
     }
 
     @Override

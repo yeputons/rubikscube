@@ -234,37 +234,44 @@ public class DefaultActivity extends RendererActivity implements View.OnTouchLis
             }
             if (!found) break;
         }
+        checkCross(cur);
         // Fixing the corners
         for (int state = 0; state < 2;) {
             boolean found = false;
-            for (int t = 0; t < 2; t++, cur.flipVer())
+            //for (int t = 0; t < 2; t++, cur.flipVer())
             for (int i = 0; i < 4; i++, cur.rotateY()) {
                 if (found) continue;
                 if (cur.getColor(RubiksCube.FRONT, 0, 0) == topColor && state == 0) {
+                    int was = 0;
                     while (cur.getColor(RubiksCube.BOTTOM, 0, 2) != cur.getColor(RubiksCube.FRONT, 1, 1)) {
                         cur.performRotation(RubiksCube.BOTTOM);
+                        was++;
                         cur.rotateY();
                         cur.rotateY();
                         cur.rotateY();
                     }
                     placeLeftCorner(cur);
+                    for (; was > 0; was--) {
+                        cur.rotateY();
+                    }
+                    checkCross(cur);
                     found = true;
                 }
-                if (cur.getColor(RubiksCube.BOTTOM, 0, 2) == topColor && state == 1) {
-                    cur.performRotation(RubiksCube.LEFT);
+                if (cur.getColor(RubiksCube.BOTTOM, 2, 2) == topColor && state == 1) {
+                    cur.performRotation(RubiksCube.RIGHT);
                     cur.performRotation(RubiksCube.BOTTOM);
                     cur.performRotation(RubiksCube.BOTTOM);
-                    cur.performRotation(RubiksCube.LEFT);
-                    cur.performRotation(RubiksCube.LEFT);
-                    cur.performRotation(RubiksCube.LEFT);
-                    cur.performRotation(RubiksCube.BOTTOM);
-                    cur.performRotation(RubiksCube.BOTTOM);
+                    cur.performRotation(RubiksCube.RIGHT);
+                    cur.performRotation(RubiksCube.RIGHT);
+                    cur.performRotation(RubiksCube.RIGHT);
+                    checkCross(cur);
                     found = true;
                 }
                 if (cur.getColor(RubiksCube.TOP, 0, 2) == topColor && state == 2
                         && (cur.getColor(RubiksCube.FRONT, 0, 2) != cur.getColor(RubiksCube.FRONT, 1, 1) ||
                             cur.getColor(RubiksCube.LEFT, 2, 2) != cur.getColor(RubiksCube.LEFT, 1, 1))) {
                     placeLeftCorner(cur);
+                    checkCross(cur);
                     found = true;
                 }
             }
@@ -274,6 +281,27 @@ public class DefaultActivity extends RendererActivity implements View.OnTouchLis
                 state++;
             }
         }
+        checkCross(cur);
+    }
+
+    private void checkCross(SequenceRecorder cur) {
+        int topColor = cur.getColor(RubiksCube.TOP, 1, 1);
+        if (cur.getColor(RubiksCube.TOP, 0, 1) != topColor)
+            throw new AssertionError("Botva3");
+        if (cur.getColor(RubiksCube.TOP, 2, 1) != topColor)
+            throw new AssertionError("Botva3");
+        if (cur.getColor(RubiksCube.TOP, 1, 0) != topColor)
+            throw new AssertionError("Botva3");
+        if (cur.getColor(RubiksCube.TOP, 1, 2) != topColor)
+            throw new AssertionError("Botva3");
+        if (cur.getColor(RubiksCube.FRONT, 1, 2) != cur.getColor(RubiksCube.FRONT, 1, 1))
+            throw new AssertionError("Botva4");
+        if (cur.getColor(RubiksCube.BACK, 1, 2) != cur.getColor(RubiksCube.BACK, 1, 1))
+            throw new AssertionError("Botva4");
+        if (cur.getColor(RubiksCube.LEFT, 1, 2) != cur.getColor(RubiksCube.LEFT, 1, 1))
+            throw new AssertionError("Botva4");
+        if (cur.getColor(RubiksCube.RIGHT, 1, 2) != cur.getColor(RubiksCube.RIGHT, 1, 1))
+            throw new AssertionError("Botva4");
     }
 
     @Override

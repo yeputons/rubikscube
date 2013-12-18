@@ -52,6 +52,9 @@ public class DefaultActivity extends RendererActivity implements View.OnTouchLis
             btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    if (cube.isRotationInProgress()) {
+                        return;
+                    }
                     cube.startRotation(id, +1);
                 }
             });

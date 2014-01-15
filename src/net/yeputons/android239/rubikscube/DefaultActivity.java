@@ -161,8 +161,13 @@ public class DefaultActivity extends RendererActivity implements View.OnTouchLis
         seqPos = 0;
 
         cube.stopRotation();
-        final int topColor = cube.getColor(RubiksCube.TOP, 1, 1);
         SequenceRecorder cur = new SequenceRecorder(cube, sequence);
+        buildLayer1(cur);
+
+    }
+
+    private void buildLayer1(SequenceRecorder cur) {
+        int topColor = cur.getColor(RubiksCube.TOP, 1, 1);
         // Building top cross
         for (;;) {
             boolean found = false;

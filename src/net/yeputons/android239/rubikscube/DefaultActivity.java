@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import min3d.core.RendererActivity;
 import min3d.vos.Light;
 import min3d.vos.Number3d;
+import static junit.framework.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -182,13 +183,11 @@ public class DefaultActivity extends RendererActivity implements View.OnTouchLis
                         while (cur.getColor(RubiksCube.TOP, 0, 1) == topColor) {
                             cur.performRotation(RubiksCube.TOP);
                         }
-                        if (cur.getColor(RubiksCube.FRONT, 0, 1) != topColor)
-                            throw new AssertionError("Botva2");
+                        assertEquals(topColor, cur.getColor(RubiksCube.FRONT, 0, 1));
                         cur.performRotation(RubiksCube.LEFT);
                         cur.performRotation(RubiksCube.LEFT);
                         cur.performRotation(RubiksCube.LEFT);
-                        if (cur.getColor(RubiksCube.TOP, 0, 1) != topColor)
-                            throw new AssertionError("Botva2");
+                        assertEquals(topColor, cur.getColor(RubiksCube.TOP, 0, 1));
                     }
             }
 
@@ -286,22 +285,12 @@ public class DefaultActivity extends RendererActivity implements View.OnTouchLis
 
     private void checkCross(SequenceRecorder cur) {
         int topColor = cur.getColor(RubiksCube.TOP, 1, 1);
-        if (cur.getColor(RubiksCube.TOP, 0, 1) != topColor)
-            throw new AssertionError("Botva3");
-        if (cur.getColor(RubiksCube.TOP, 2, 1) != topColor)
-            throw new AssertionError("Botva3");
-        if (cur.getColor(RubiksCube.TOP, 1, 0) != topColor)
-            throw new AssertionError("Botva3");
-        if (cur.getColor(RubiksCube.TOP, 1, 2) != topColor)
-            throw new AssertionError("Botva3");
-        if (cur.getColor(RubiksCube.FRONT, 1, 2) != cur.getColor(RubiksCube.FRONT, 1, 1))
-            throw new AssertionError("Botva4");
-        if (cur.getColor(RubiksCube.BACK, 1, 2) != cur.getColor(RubiksCube.BACK, 1, 1))
-            throw new AssertionError("Botva4");
-        if (cur.getColor(RubiksCube.LEFT, 1, 2) != cur.getColor(RubiksCube.LEFT, 1, 1))
-            throw new AssertionError("Botva4");
-        if (cur.getColor(RubiksCube.RIGHT, 1, 2) != cur.getColor(RubiksCube.RIGHT, 1, 1))
-            throw new AssertionError("Botva4");
+        assertEquals(topColor, cur.getColor(RubiksCube.TOP, 0, 1));
+        assertEquals(topColor, cur.getColor(RubiksCube.TOP, 1, 0));
+        assertEquals(topColor, cur.getColor(RubiksCube.TOP, 2, 1));
+        assertEquals(topColor, cur.getColor(RubiksCube.TOP, 1, 2));
+        for (int i = 0; i < 4; i++) if (i != RubiksCube.TOP && i != RubiksCube.BOTTOM)
+            assertEquals(cur.getColor(i, 1, 1), cur.getColor(i, 1, 2));
     }
 
     @Override

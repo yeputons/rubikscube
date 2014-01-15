@@ -49,19 +49,18 @@ public class SequenceRecorder {
             currentRotation[i] = new OriginalFaceInfo();
             currentRotation[i].originalFace = i;
         }
+    }
 
-        rotateY();
-        rotateY();
-        rotateY();
-        rotateY();
+    public boolean isIdentity() {
         for (int i = 0; i < 6; i++) {
-            if (currentRotation[i].originalFace != i ||
-             currentRotation[i].wasSwapped ||
-             currentRotation[i].revA ||
-             currentRotation[i].revB ||
-                    currentRotation[i].isReversed)
-                throw new AssertionError("Botva");
+            OriginalFaceInfo info = currentRotation[i];
+            if (info.originalFace != i) return false;
+            if (info.wasSwapped) return false;
+            if (info.revA) return false;
+            if (info.revB) return false;
+            if (info.isReversed) return false;
         }
+        return true;
     }
 
     public int getColor(int face, int a, int b) {

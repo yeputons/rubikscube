@@ -157,7 +157,7 @@ public class RubiksCube extends Object3dContainer implements Cloneable {
         return cols[face][b][a];
     }
 
-    private static final int ROTATION_SPEED = 5;
+    private static final int ROTATION_SPEED = 15;
     static {
         if (90 % ROTATION_SPEED != 0)
             throw new AssertionError("ROTATION_SPEED should be a divisor of 90");

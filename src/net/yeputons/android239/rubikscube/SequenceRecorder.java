@@ -30,6 +30,11 @@ public class SequenceRecorder {
             }
             revB = !revB;
         }
+
+        public void flipVer() {
+            revA = !revA;
+            isReversed = !isReversed;
+        }
     }
 
     private RubiksCube cube;
@@ -75,6 +80,19 @@ public class SequenceRecorder {
         for (int i = 0; i < cnt; i++) {
             cube.performRotation(info.originalFace, 1);
             sequence.add(info.originalFace);
+        }
+    }
+
+    public void flipVer() {
+        {
+            OriginalFaceInfo t = currentRotation[RubiksCube.LEFT];
+            currentRotation[RubiksCube.LEFT] = currentRotation[RubiksCube.RIGHT];
+            currentRotation[RubiksCube.RIGHT] = t;
+            //currentRotation[RubiksCube.LEFT].isReversed = !currentRotation[RubiksCube.LEFT].isReversed;
+            //currentRotation[RubiksCube.RIGHT].isReversed = !currentRotation[RubiksCube.RIGHT].isReversed;
+        }
+        for (int i = 0; i < 6; i++) if (i != RubiksCube.LEFT && i != RubiksCube.RIGHT) {
+            currentRotation[i].flipVer();
         }
     }
 

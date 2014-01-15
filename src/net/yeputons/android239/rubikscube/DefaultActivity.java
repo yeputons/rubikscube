@@ -1,6 +1,7 @@
 package net.yeputons.android239.rubikscube;
 
 import android.app.AlertDialog;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -204,7 +205,7 @@ public class DefaultActivity extends RendererActivity implements View.OnTouchLis
         cube.stopRotation();
         SequenceRecorder cur = new SequenceRecorder(cube, sequence);
         buildLayer1(cur);
-
+        buildLayer2(cur);
     }
 
     private void buildLayer1(SequenceRecorder cur) {
@@ -335,6 +336,65 @@ public class DefaultActivity extends RendererActivity implements View.OnTouchLis
         checkCross(cur);
     }
 
+    private void placeRightSide(SequenceRecorder cur) {
+        cur.performRotation(RubiksCube.BOTTOM);
+        cur.performRotation(RubiksCube.BOTTOM);
+        cur.performRotation(RubiksCube.BOTTOM);
+        cur.performRotation(RubiksCube.RIGHT);
+        cur.performRotation(RubiksCube.BOTTOM);
+        cur.performRotation(RubiksCube.RIGHT);
+        cur.performRotation(RubiksCube.RIGHT);
+        cur.performRotation(RubiksCube.RIGHT);
+        cur.rotateY();
+        cur.rotateY();
+        cur.rotateY();
+        placeLeftCorner(cur);
+        cur.rotateY();
+        checkCross(cur);
+    }
+
+    private void buildLayer2(SequenceRecorder cur) {
+        int topColor = cur.getColor(RubiksCube.TOP, 1, 1);
+        int bottomColor = cur.getColor(RubiksCube.BOTTOM, 1, 1);
+        for (int state = 0; state < 2;) {
+            boolean found = false;
+            for (int t = 0; t < 2; t++, cur.flipVer())
+            for (int i = 0; i < 4; i++, cur.rotateY()) {
+                if (found) continue;
+
+                int curColor = cur.getColor(RubiksCube.FRONT, 1, 0);
+                int secColor = cur.getColor(RubiksCube.BOTTOM, 1, 2);
+                if (curColor == topColor || curColor == bottomColor) continue;
+                if (secColor == topColor || secColor == bottomColor) continue;
+
+                int cnt = 0;
+                while (curColor != cur.getColor(RubiksCube.FRONT, 1, 1)) {
+                    cnt++;
+                    cur.rotateY();
+                    cur.rotateY();
+                    cur.rotateY();
+                }
+
+                if (cur.getColor(RubiksCube.RIGHT, 2, 1) == secColor) {
+                    for (int i2 = 0; i2 < cnt; i2++)
+                        cur.performRotation(RubiksCube.BOTTOM);
+                    placeRightSide(cur);
+                    found = true;
+                }
+
+                while (cnt % 4 != 0) {
+                    cnt++;
+                    cur.rotateY();
+                }
+            }
+            if (!found) {
+                state++;
+            } else {
+                state = 0;
+            }
+        }
+    }
+
     private void checkCross(SequenceRecorder cur) {
         int topColor = cur.getColor(RubiksCube.TOP, 1, 1);
         assertEquals(topColor, cur.getColor(RubiksCube.TOP, 0, 1));
@@ -343,6 +403,8 @@ public class DefaultActivity extends RendererActivity implements View.OnTouchLis
         assertEquals(topColor, cur.getColor(RubiksCube.TOP, 1, 2));
         for (int i = 0; i < 4; i++) if (i != RubiksCube.TOP && i != RubiksCube.BOTTOM)
             assertEquals(cur.getColor(i, 1, 1), cur.getColor(i, 1, 2));
+    }
+    private void checkLayer1(SequenceRecorder cur) {
     }
 
     @Override

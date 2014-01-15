@@ -5,6 +5,9 @@ import java.util.ArrayList;
 public class SequenceRecorder {
     private class OriginalFaceInfo implements Cloneable {
         public int originalFace;
+        // We applied wasSwapped first, revA&revB then and got current face
+        // A looks to the right (X)
+        // B looks to the top (Y)
         public boolean wasSwapped, revA, revB;
         public boolean isReversed;
 
@@ -18,14 +21,14 @@ public class SequenceRecorder {
             return other;
         }
 
-        public void rotateClockwise() {
+        public void rotateCounterClockwise() {
             wasSwapped = !wasSwapped;
             {
                 boolean neA = revB, neB = revA;
                 revA = neA;
                 revB = neB;
             }
-            revA = !revA;
+            revB = !revB;
         }
     }
 
@@ -58,12 +61,12 @@ public class SequenceRecorder {
 
     public int getColor(int face, int a, int b) {
         OriginalFaceInfo info = currentRotation[face];
+        if (info.revA) a = 2 - a;
+        if (info.revB) b = 2 - b;
         if (info.wasSwapped) {
             int na = b, nb = a;
             a = na; b = nb;
         }
-        if (info.revA) a = 2 - a;
-        if (info.revB) b = 2 - b;
         return cube.getColor(info.originalFace, a, b);
     }
     public void performRotation(int face) {
@@ -75,6 +78,9 @@ public class SequenceRecorder {
         }
     }
 
+    /**
+     * Rotates your POV counter-clockwise (facing from the top)
+     */
     public void rotateY() {
         OriginalFaceInfo[] old = new OriginalFaceInfo[6];
         for (int i = 0; i < 6; i++) {
@@ -91,7 +97,7 @@ public class SequenceRecorder {
         currentRotation[RubiksCube.LEFT].revA = !currentRotation[RubiksCube.LEFT].revA;
         currentRotation[RubiksCube.RIGHT].revA = !currentRotation[RubiksCube.RIGHT].revA;
 
-        currentRotation[RubiksCube.TOP].rotateClockwise();
-        currentRotation[RubiksCube.BOTTOM].rotateClockwise();
+        currentRotation[RubiksCube.TOP].rotateCounterClockwise();
+        currentRotation[RubiksCube.BOTTOM].rotateCounterClockwise();
     }
 }

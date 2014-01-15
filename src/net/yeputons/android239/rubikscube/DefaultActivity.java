@@ -236,9 +236,9 @@ public class DefaultActivity extends RendererActivity implements View.OnTouchLis
         }
         checkCross(cur);
         // Fixing the corners
-        for (int state = 0; state < 2;) {
+        for (int state = 0; state < 3;) {
             boolean found = false;
-            //for (int t = 0; t < 2; t++, cur.flipVer())
+            for (int t = 0; t < 2; t++, cur.flipVer())
             for (int i = 0; i < 4; i++, cur.rotateY()) {
                 if (found) continue;
                 if (cur.getColor(RubiksCube.FRONT, 0, 0) == topColor && state == 0) {

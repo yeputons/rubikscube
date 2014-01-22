@@ -6,9 +6,13 @@ import min3d.vos.Color4;
 import min3d.vos.Light;
 import min3d.vos.Number3d;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.Random;
 
-public class RubiksCube extends Object3dContainer implements Cloneable {
+public class RubiksCube extends Object3dContainer implements Cloneable, Serializable {
     public static final Color4 COLORS[] = {
             new Color4(255, 0, 0, 255),
             new Color4(0, 0, 255, 255),
@@ -45,6 +49,25 @@ public class RubiksCube extends Object3dContainer implements Cloneable {
         boxes = new Box[3][3][3];
 
         recreateBoxes();
+    }
+
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        for (int i = 0; i < 6; i++)
+            for (int j = 0; j < 3; j++)
+                for (int k = 0; k < 3; k++)
+                    out.writeByte((byte) cols[i][j][k]);
+    }
+    private void readObject(ObjectInputStream in) throws IOException {
+        cols = new int[6][3][3];
+        for (int i = 0; i < 6; i++)
+            for (int j = 0; j < 3; j++)
+                for (int k = 0; k < 3; k++)
+                    cols[i][j][k] = in.readByte();
+        boxes = new Box[3][3][3];
+        recreateBoxes();
+        curTurnFace = -1;
+        curTurnProgress = 90;
+        curTurnDirection = 0;
     }
 
     @Override

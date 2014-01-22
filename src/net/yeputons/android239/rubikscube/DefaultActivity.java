@@ -375,7 +375,7 @@ public class DefaultActivity extends RendererActivity implements View.OnTouchLis
                     cur.rotateY();
                 }
 
-                if (cur.getColor(RubiksCube.RIGHT, 2, 1) == secColor) {
+                if (cur.getColor(RubiksCube.RIGHT, 1, 1) == secColor) {
                     for (int i2 = 0; i2 < cnt; i2++)
                         cur.performRotation(RubiksCube.BOTTOM);
                     placeRightSide(cur);

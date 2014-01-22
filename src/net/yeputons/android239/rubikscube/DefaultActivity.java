@@ -320,13 +320,9 @@ public class DefaultActivity extends RendererActivity implements View.OnTouchLis
                             cur.getColor(RubiksCube.LEFT, 2, 2)
                     };
                     if (!Arrays.equals(expected, real)) {
-                        Arrays.sort(expected);
-                        Arrays.sort(real);
-                        if (Arrays.equals(expected, real)) {
-                            placeLeftCorner(cur);
-                            checkCross(cur);
-                            found = true;
-                        }
+                        placeLeftCorner(cur);
+                        checkCross(cur);
+                        found = true;
                     }
                 }
             }

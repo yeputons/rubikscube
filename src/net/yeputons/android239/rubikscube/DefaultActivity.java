@@ -1,5 +1,6 @@
 package net.yeputons.android239.rubikscube;
 
+import android.app.AlertDialog;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -11,6 +12,10 @@ import min3d.vos.Light;
 import min3d.vos.Number3d;
 import static junit.framework.Assert.*;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -71,6 +76,8 @@ public class DefaultActivity extends RendererActivity implements View.OnTouchLis
         menu.add(0, 2, 2, "Shuffle cube");
         menu.add(0, 3, 3, "Random move");
         menu.add(0, 4, 4, "Build cube");
+        menu.add(0, 5, 5, "Save");
+        menu.add(0, 6, 6, "Restore");
         return true;
     }
 
@@ -111,6 +118,39 @@ public class DefaultActivity extends RendererActivity implements View.OnTouchLis
             case 4:
                 buildCube();
                 onCubeRotationDone();
+                break;
+            case 5:
+                try {
+                    ObjectOutputStream out = new ObjectOutputStream(openFileOutput("cube.bin", MODE_PRIVATE));
+                    out.writeObject(cube);
+                    out.close();
+                } catch (IOException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
+                break;
+            case 6:
+                try {
+                    RubiksCube newCube = null;
+                    ObjectInputStream in = new ObjectInputStream(openFileInput("cube.bin"));
+                    try {
+                        newCube  = (RubiksCube) in.readObject();
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    }
+                    in.close();
+
+                    if (newCube != null) {
+                        scene.removeChild(cube);
+                        cube = newCube;
+                        cube.setOnCubeRotationDoneListener(this);
+                        scene.addChild(cube);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    new AlertDialog.Builder(this)
+                            .setTitle("Unable to load cube")
+                            .show();
+                }
                 break;
             case -1:
                 break;

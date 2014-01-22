@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 public class DefaultActivity extends RendererActivity implements View.OnTouchListener, OnCubeRotationDoneListener {
@@ -311,12 +312,22 @@ public class DefaultActivity extends RendererActivity implements View.OnTouchLis
                     checkCross(cur);
                     found = true;
                 }
-                if (cur.getColor(RubiksCube.TOP, 0, 2) == topColor && state == 2
-                        && (cur.getColor(RubiksCube.FRONT, 0, 2) != cur.getColor(RubiksCube.FRONT, 1, 1) ||
-                            cur.getColor(RubiksCube.LEFT, 2, 2) != cur.getColor(RubiksCube.LEFT, 1, 1))) {
-                    placeLeftCorner(cur);
-                    checkCross(cur);
-                    found = true;
+                if (state == 2) {
+                    int[] expected = { topColor, cur.getColor(RubiksCube.FRONT, 1, 1), cur.getColor(RubiksCube.LEFT, 1, 1) };
+                    int[] real = {
+                            cur.getColor(RubiksCube.TOP, 0, 2),
+                            cur.getColor(RubiksCube.FRONT, 0, 2),
+                            cur.getColor(RubiksCube.LEFT, 2, 2)
+                    };
+                    if (!Arrays.equals(expected, real)) {
+                        Arrays.sort(expected);
+                        Arrays.sort(real);
+                        if (Arrays.equals(expected, real)) {
+                            placeLeftCorner(cur);
+                            checkCross(cur);
+                            found = true;
+                        }
+                    }
                 }
             }
             if (found) {

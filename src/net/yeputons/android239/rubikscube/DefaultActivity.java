@@ -362,29 +362,39 @@ public class DefaultActivity extends RendererActivity implements View.OnTouchLis
             for (int i = 0; i < 4; i++, cur.rotateY()) {
                 if (found) continue;
 
-                int curColor = cur.getColor(RubiksCube.FRONT, 1, 0);
-                int secColor = cur.getColor(RubiksCube.BOTTOM, 1, 2);
-                if (curColor == topColor || curColor == bottomColor) continue;
-                if (secColor == topColor || secColor == bottomColor) continue;
+                if (state == 0) {
+                    int curColor = cur.getColor(RubiksCube.FRONT, 1, 0);
+                    int secColor = cur.getColor(RubiksCube.BOTTOM, 1, 2);
+                    if (curColor == topColor || curColor == bottomColor) continue;
+                    if (secColor == topColor || secColor == bottomColor) continue;
 
-                int cnt = 0;
-                while (curColor != cur.getColor(RubiksCube.FRONT, 1, 1)) {
-                    cnt++;
-                    cur.rotateY();
-                    cur.rotateY();
-                    cur.rotateY();
+                    int cnt = 0;
+                    while (curColor != cur.getColor(RubiksCube.FRONT, 1, 1)) {
+                        cnt++;
+                        cur.rotateY();
+                        cur.rotateY();
+                        cur.rotateY();
+                    }
+
+                    if (cur.getColor(RubiksCube.RIGHT, 1, 1) == secColor) {
+                        for (int i2 = 0; i2 < cnt; i2++)
+                            cur.performRotation(RubiksCube.BOTTOM);
+                        placeRightSide(cur);
+                        found = true;
+                    }
+
+                    while (cnt % 4 != 0) {
+                        cnt++;
+                        cur.rotateY();
+                    }
                 }
-
-                if (cur.getColor(RubiksCube.RIGHT, 1, 1) == secColor) {
-                    for (int i2 = 0; i2 < cnt; i2++)
-                        cur.performRotation(RubiksCube.BOTTOM);
-                    placeRightSide(cur);
-                    found = true;
-                }
-
-                while (cnt % 4 != 0) {
-                    cnt++;
-                    cur.rotateY();
+                if (state == 1) {
+                    int[] real = { cur.getColor(RubiksCube.FRONT, 2, 1), cur.getColor(RubiksCube.RIGHT, 2, 1) };
+                    int[] expected = { cur.getColor(RubiksCube.FRONT, 1, 1), cur.getColor(RubiksCube.RIGHT, 1, 1) };
+                    if (!Arrays.equals(real, expected)) {
+                        placeRightSide(cur);
+                        found = true;
+                    }
                 }
             }
             if (!found) {

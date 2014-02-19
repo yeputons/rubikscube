@@ -403,6 +403,22 @@ public class DefaultActivity extends RendererActivity implements View.OnTouchLis
         }
     }
 
+    private boolean isRightCornerOk(SequenceRecorder cur) {
+        int[] a = {
+                cur.getColor(RubiksCube.RIGHT, 2, 0),
+                cur.getColor(RubiksCube.FRONT, 2, 0),
+                cur.getColor(RubiksCube.BOTTOM, 2, 2)
+        };
+        int[] b = {
+                cur.getColor(RubiksCube.RIGHT, 1, 1),
+                cur.getColor(RubiksCube.FRONT, 1, 1),
+                cur.getColor(RubiksCube.BOTTOM, 1, 1)
+        };
+        Arrays.sort(a);
+        Arrays.sort(b);
+        return Arrays.equals(a, b);
+    }
+
     private void buildLayer3(SequenceRecorder cur) {
         final int bottomColor = cur.getColor(RubiksCube.BOTTOM, 1, 1);
         for (;;) {
@@ -451,6 +467,44 @@ public class DefaultActivity extends RendererActivity implements View.OnTouchLis
                 cur.rotateY();
             }
         }
+
+        for (;;) {
+            boolean found = false;
+            for (int i = 0; i < 4; i++, cur.rotateY()) if (!found) {
+                cur.flipVer();
+                if (!isRightCornerOk(cur)) {
+                    cur.flipVer();
+                    continue;
+                }
+                cur.flipVer();
+
+                found = true;
+                int ops = 0;
+                while (!isRightCornerOk(cur)) {
+                    shiftLayer3Corners(cur);
+                    ops++;
+                    assertTrue(ops < 3);
+                }
+            }
+            if (found) break;
+            shiftLayer3Corners(cur);
+        }
+    }
+
+    private void shiftLayer3Corners(SequenceRecorder cur) {
+        cur.performRotation(RubiksCube.LEFT);
+        cur.performRotation(RubiksCube.RIGHT);
+        cur.performRotation(RubiksCube.BOTTOM);
+        cur.performRotation(RubiksCube.LEFT);
+        cur.performRotation(RubiksCube.LEFT);
+        cur.performRotation(RubiksCube.LEFT);
+        cur.performRotation(RubiksCube.BOTTOM);
+        cur.performRotation(RubiksCube.BOTTOM);
+        cur.performRotation(RubiksCube.BOTTOM);
+        cur.performRotation(RubiksCube.RIGHT);
+        cur.performRotation(RubiksCube.RIGHT);
+        cur.performRotation(RubiksCube.RIGHT);
+        placeLeftCorner(cur);
     }
 
     private void swapLayer3Edges(SequenceRecorder cur) {

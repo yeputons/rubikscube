@@ -142,9 +142,14 @@ public class DefaultActivity extends RendererActivity implements View.OnTouchLis
                     }
                 } catch (IOException e) {
                     e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                    new AlertDialog.Builder(this)
-                            .setTitle("Unable to load cube")
-                            .show();
+                    this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            new AlertDialog.Builder(DefaultActivity.this)
+                                    .setTitle("Unable to load cube")
+                                    .show();
+                        }
+                    });
                 }
                 break;
             case -1:

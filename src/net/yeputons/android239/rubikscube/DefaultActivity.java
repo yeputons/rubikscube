@@ -436,6 +436,21 @@ public class DefaultActivity extends RendererActivity implements View.OnTouchLis
         assertEquals(l0, l);
         assertEquals(f0, f);
         assertEquals(r0, r);
+
+        for (int i = 0; i < 4; i++, cur.performRotation(RubiksCube.BOTTOM)) {
+            if (cur.getColor(RubiksCube.FRONT, 1, 0) != bottomColor)
+                continue;
+            for (int step = 0; step < 4; step++) {
+                cur.performRotation(RubiksCube.FRONT);
+                cur.performRotation(RubiksCube.FRONT);
+                cur.performRotation(RubiksCube.FRONT);
+                cur.performRotation(RubiksCube.TOP);
+                cur.performRotation(RubiksCube.BOTTOM);
+                cur.rotateY();
+                cur.rotateY();
+                cur.rotateY();
+            }
+        }
     }
 
     private void swapLayer3Edges(SequenceRecorder cur) {

@@ -3,6 +3,8 @@ rubikscube
 
 This is an Android application for solving a Rubik's cube. Part of a 2013-2014 "Smartphones programming" course in the SPb Center of Robotics of PhML 239
 
+Currently it is able to shuffle cube, solve it automatically and then demonstrate building process.
+
 Used libraries
 ==============
 

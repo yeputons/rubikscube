@@ -409,8 +409,6 @@ public class DefaultActivity extends RendererActivity implements View.OnTouchLis
         for (int i = 0; i < 4; i++) if (i != RubiksCube.TOP && i != RubiksCube.BOTTOM)
             assertEquals(cur.getColor(i, 1, 1), cur.getColor(i, 1, 2));
     }
-    private void checkLayer1(SequenceRecorder cur) {
-    }
 
     @Override
     public void onCubeRotationDone() {

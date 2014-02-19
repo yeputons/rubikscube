@@ -5,17 +5,19 @@ import junit.framework.Assert;
 import java.util.Arrays;
 
 public class RubikSolver {
-    public RubikSolver() {
+    private SequenceRecorder cur;
+    public RubikSolver(SequenceRecorder _cur) {
+        cur = _cur;
     }
 
-    void placeLeftCorner(SequenceRecorder cur) {
+    private void placeLeftCorner() {
         cur.performRotation(RubiksCube.BOTTOM);
         cur.performRotation(RubiksCube.LEFT);
         cur.performRotationRev(RubiksCube.BOTTOM);
         cur.performRotationRev(RubiksCube.LEFT);
     }
 
-    void buildLayer1(SequenceRecorder cur) {
+    void buildLayer1() {
         int topColor = cur.getColor(RubiksCube.TOP, 1, 1);
         // Building top cross
         for (; ; ) {
@@ -83,7 +85,7 @@ public class RubikSolver {
             }
             if (!found) break;
         }
-        checkCross(cur);
+        checkCross();
         // Fixing the corners
         for (int state = 0; state < 3; ) {
             boolean found = false;
@@ -97,11 +99,11 @@ public class RubikSolver {
                             was++;
                             cur.rotateYRev();
                         }
-                        placeLeftCorner(cur);
+                        placeLeftCorner();
                         for (; was > 0; was--) {
                             cur.rotateY();
                         }
-                        checkCross(cur);
+                        checkCross();
                         found = true;
                     }
                     if (cur.getColor(RubiksCube.BOTTOM, 2, 2) == topColor && state == 1) {
@@ -109,7 +111,7 @@ public class RubikSolver {
                         cur.performRotation(RubiksCube.BOTTOM);
                         cur.performRotation(RubiksCube.BOTTOM);
                         cur.performRotationRev(RubiksCube.RIGHT);
-                        checkCross(cur);
+                        checkCross();
                         found = true;
                     }
                     if (state == 2) {
@@ -120,8 +122,8 @@ public class RubikSolver {
                                 cur.getColor(RubiksCube.LEFT, 2, 2)
                         };
                         if (!Arrays.equals(expected, real)) {
-                            placeLeftCorner(cur);
-                            checkCross(cur);
+                            placeLeftCorner();
+                            checkCross();
                             found = true;
                         }
                     }
@@ -132,21 +134,21 @@ public class RubikSolver {
                 state++;
             }
         }
-        checkCross(cur);
+        checkCross();
     }
 
-    void placeRightSide(SequenceRecorder cur) {
+    private void placeRightSide() {
         cur.performRotationRev(RubiksCube.BOTTOM);
         cur.performRotation(RubiksCube.RIGHT);
         cur.performRotation(RubiksCube.BOTTOM);
         cur.performRotationRev(RubiksCube.RIGHT);
         cur.rotateYRev();
-        placeLeftCorner(cur);
+        placeLeftCorner();
         cur.rotateY();
-        checkCross(cur);
+        checkCross();
     }
 
-    void buildLayer2(SequenceRecorder cur) {
+    void buildLayer2() {
         int topColor = cur.getColor(RubiksCube.TOP, 1, 1);
         int bottomColor = cur.getColor(RubiksCube.BOTTOM, 1, 1);
         for (int state = 0; state < 2; ) {
@@ -170,7 +172,7 @@ public class RubikSolver {
                         if (cur.getColor(RubiksCube.RIGHT, 1, 1) == secColor) {
                             for (int i2 = 0; i2 < cnt; i2++)
                                 cur.performRotation(RubiksCube.BOTTOM);
-                            placeRightSide(cur);
+                            placeRightSide();
                             found = true;
                         }
 
@@ -183,7 +185,7 @@ public class RubikSolver {
                         int[] real = {cur.getColor(RubiksCube.FRONT, 2, 1), cur.getColor(RubiksCube.RIGHT, 2, 1)};
                         int[] expected = {cur.getColor(RubiksCube.FRONT, 1, 1), cur.getColor(RubiksCube.RIGHT, 1, 1)};
                         if (!Arrays.equals(real, expected)) {
-                            placeRightSide(cur);
+                            placeRightSide();
                             found = true;
                         }
                     }
@@ -196,7 +198,7 @@ public class RubikSolver {
         }
     }
 
-    boolean isRightCornerOk(SequenceRecorder cur) {
+    private boolean isRightCornerOk() {
         int[] a = {
                 cur.getColor(RubiksCube.RIGHT, 2, 0),
                 cur.getColor(RubiksCube.FRONT, 2, 0),
@@ -212,7 +214,7 @@ public class RubikSolver {
         return Arrays.equals(a, b);
     }
 
-    void buildLayer3(SequenceRecorder cur) {
+    void buildLayer3() {
         final int bottomColor = cur.getColor(RubiksCube.BOTTOM, 1, 1);
         for (; ; ) {
             int col = cur.getColor(RubiksCube.BOTTOM, 1, 0);
@@ -231,13 +233,13 @@ public class RubikSolver {
 
         for (int step = 0; step < 3; step++) {
             if (f == r0) {
-                swapLayer3Edges(cur);
+                swapLayer3Edges();
                 int tmp = f;
                 f = r;
                 r = tmp;
             } else if (l == r0 || l == f0) {
                 cur.rotateY();
-                swapLayer3Edges(cur);
+                swapLayer3Edges();
                 cur.rotateYRev();
                 int tmp = f;
                 f = l;
@@ -264,7 +266,7 @@ public class RubikSolver {
             for (int i = 0; i < 4; i++, cur.rotateY())
                 if (!found) {
                     cur.flipVer();
-                    if (!isRightCornerOk(cur)) {
+                    if (!isRightCornerOk()) {
                         cur.flipVer();
                         continue;
                     }
@@ -272,14 +274,14 @@ public class RubikSolver {
 
                     found = true;
                     int ops = 0;
-                    while (!isRightCornerOk(cur)) {
-                        shiftLayer3Corners(cur);
+                    while (!isRightCornerOk()) {
+                        shiftLayer3Corners();
                         ops++;
                         Assert.assertTrue(ops < 3);
                     }
                 }
             if (found) break;
-            shiftLayer3Corners(cur);
+            shiftLayer3Corners();
         }
 
         for (int i = 0; i < 4; i++, cur.performRotation(RubiksCube.BOTTOM)) {
@@ -292,17 +294,17 @@ public class RubikSolver {
         }
     }
 
-    void shiftLayer3Corners(SequenceRecorder cur) {
+    private void shiftLayer3Corners() {
         cur.performRotation(RubiksCube.LEFT);
         cur.performRotation(RubiksCube.RIGHT);
         cur.performRotation(RubiksCube.BOTTOM);
         cur.performRotationRev(RubiksCube.LEFT);
         cur.performRotationRev(RubiksCube.BOTTOM);
         cur.performRotationRev(RubiksCube.RIGHT);
-        placeLeftCorner(cur);
+        placeLeftCorner();
     }
 
-    void swapLayer3Edges(SequenceRecorder cur) {
+    private void swapLayer3Edges() {
         cur.performRotation(RubiksCube.BOTTOM);
         cur.performRotationRev(RubiksCube.FRONT);
         cur.performRotation(RubiksCube.LEFT);
@@ -312,7 +314,7 @@ public class RubikSolver {
         cur.performRotation(RubiksCube.FRONT);
     }
 
-    void checkCross(SequenceRecorder cur) {
+    private void checkCross() {
         int topColor = cur.getColor(RubiksCube.TOP, 1, 1);
         Assert.assertEquals(topColor, cur.getColor(RubiksCube.TOP, 0, 1));
         Assert.assertEquals(topColor, cur.getColor(RubiksCube.TOP, 1, 0));

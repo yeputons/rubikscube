@@ -185,13 +185,10 @@ public class DefaultActivity extends RendererActivity implements View.OnTouchLis
 
         cube.stopRotation();
         SequenceRecorder cur = new SequenceRecorder(cube, sequence);
-        RubikSolver rubikSolver = new RubikSolver();
-        rubikSolver.buildLayer1(cur);
-        assertTrue(cur.isIdentity());
-        rubikSolver.buildLayer2(cur);
-        assertTrue(cur.isIdentity());
-        rubikSolver.buildLayer3(cur);
-        assertTrue(cur.isIdentity());
+        RubikSolver rubikSolver = new RubikSolver(cur);
+        rubikSolver.buildLayer1();
+        rubikSolver.buildLayer2();
+        rubikSolver.buildLayer3();
     }
 
     @Override

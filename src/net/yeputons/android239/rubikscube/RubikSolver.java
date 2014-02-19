@@ -11,12 +11,8 @@ public class RubikSolver {
     void placeLeftCorner(SequenceRecorder cur) {
         cur.performRotation(RubiksCube.BOTTOM);
         cur.performRotation(RubiksCube.LEFT);
-        cur.performRotation(RubiksCube.BOTTOM);
-        cur.performRotation(RubiksCube.BOTTOM);
-        cur.performRotation(RubiksCube.BOTTOM);
-        cur.performRotation(RubiksCube.LEFT);
-        cur.performRotation(RubiksCube.LEFT);
-        cur.performRotation(RubiksCube.LEFT);
+        cur.performRotationRev(RubiksCube.BOTTOM);
+        cur.performRotationRev(RubiksCube.LEFT);
     }
 
     void buildLayer1(SequenceRecorder cur) {
@@ -42,9 +38,7 @@ public class RubikSolver {
                             cur.performRotation(RubiksCube.TOP);
                         }
                         Assert.assertEquals(topColor, cur.getColor(RubiksCube.FRONT, 0, 1));
-                        cur.performRotation(RubiksCube.LEFT);
-                        cur.performRotation(RubiksCube.LEFT);
-                        cur.performRotation(RubiksCube.LEFT);
+                        cur.performRotationRev(RubiksCube.LEFT);
                         Assert.assertEquals(topColor, cur.getColor(RubiksCube.TOP, 0, 1));
                     }
             }
@@ -79,9 +73,7 @@ public class RubikSolver {
                         while (cur.getColor(RubiksCube.FRONT, 1, 0) != cur.getColor(RubiksCube.FRONT, 1, 1)) {
                             cnt++;
                             cur.performRotation(RubiksCube.BOTTOM);
-                            cur.rotateY();
-                            cur.rotateY();
-                            cur.rotateY();
+                            cur.rotateYRev();
                         }
                         cur.performRotation(RubiksCube.FRONT);
                         cur.performRotation(RubiksCube.FRONT);
@@ -103,9 +95,7 @@ public class RubikSolver {
                         while (cur.getColor(RubiksCube.BOTTOM, 0, 2) != cur.getColor(RubiksCube.FRONT, 1, 1)) {
                             cur.performRotation(RubiksCube.BOTTOM);
                             was++;
-                            cur.rotateY();
-                            cur.rotateY();
-                            cur.rotateY();
+                            cur.rotateYRev();
                         }
                         placeLeftCorner(cur);
                         for (; was > 0; was--) {
@@ -118,9 +108,7 @@ public class RubikSolver {
                         cur.performRotation(RubiksCube.RIGHT);
                         cur.performRotation(RubiksCube.BOTTOM);
                         cur.performRotation(RubiksCube.BOTTOM);
-                        cur.performRotation(RubiksCube.RIGHT);
-                        cur.performRotation(RubiksCube.RIGHT);
-                        cur.performRotation(RubiksCube.RIGHT);
+                        cur.performRotationRev(RubiksCube.RIGHT);
                         checkCross(cur);
                         found = true;
                     }
@@ -148,17 +136,11 @@ public class RubikSolver {
     }
 
     void placeRightSide(SequenceRecorder cur) {
-        cur.performRotation(RubiksCube.BOTTOM);
-        cur.performRotation(RubiksCube.BOTTOM);
-        cur.performRotation(RubiksCube.BOTTOM);
+        cur.performRotationRev(RubiksCube.BOTTOM);
         cur.performRotation(RubiksCube.RIGHT);
         cur.performRotation(RubiksCube.BOTTOM);
-        cur.performRotation(RubiksCube.RIGHT);
-        cur.performRotation(RubiksCube.RIGHT);
-        cur.performRotation(RubiksCube.RIGHT);
-        cur.rotateY();
-        cur.rotateY();
-        cur.rotateY();
+        cur.performRotationRev(RubiksCube.RIGHT);
+        cur.rotateYRev();
         placeLeftCorner(cur);
         cur.rotateY();
         checkCross(cur);
@@ -182,9 +164,7 @@ public class RubikSolver {
                         int cnt = 0;
                         while (curColor != cur.getColor(RubiksCube.FRONT, 1, 1)) {
                             cnt++;
-                            cur.rotateY();
-                            cur.rotateY();
-                            cur.rotateY();
+                            cur.rotateYRev();
                         }
 
                         if (cur.getColor(RubiksCube.RIGHT, 1, 1) == secColor) {
@@ -258,9 +238,7 @@ public class RubikSolver {
             } else if (l == r0 || l == f0) {
                 cur.rotateY();
                 swapLayer3Edges(cur);
-                cur.rotateY();
-                cur.rotateY();
-                cur.rotateY();
+                cur.rotateYRev();
                 int tmp = f;
                 f = l;
                 l = tmp;
@@ -274,14 +252,10 @@ public class RubikSolver {
             if (cur.getColor(RubiksCube.FRONT, 1, 0) != bottomColor)
                 continue;
             for (int step = 0; step < 4; step++) {
-                cur.performRotation(RubiksCube.FRONT);
-                cur.performRotation(RubiksCube.FRONT);
-                cur.performRotation(RubiksCube.FRONT);
+                cur.performRotationRev(RubiksCube.FRONT);
                 cur.performRotation(RubiksCube.TOP);
                 cur.performRotation(RubiksCube.BOTTOM);
-                cur.rotateY();
-                cur.rotateY();
-                cur.rotateY();
+                cur.rotateYRev();
             }
         }
 
@@ -312,12 +286,8 @@ public class RubikSolver {
             while (cur.getColor(RubiksCube.BOTTOM, 0, 2) != bottomColor) {
                 cur.performRotation(RubiksCube.LEFT);
                 cur.performRotation(RubiksCube.FRONT);
-                cur.performRotation(RubiksCube.LEFT);
-                cur.performRotation(RubiksCube.LEFT);
-                cur.performRotation(RubiksCube.LEFT);
-                cur.performRotation(RubiksCube.FRONT);
-                cur.performRotation(RubiksCube.FRONT);
-                cur.performRotation(RubiksCube.FRONT);
+                cur.performRotationRev(RubiksCube.LEFT);
+                cur.performRotationRev(RubiksCube.FRONT);
             }
         }
     }
@@ -326,31 +296,19 @@ public class RubikSolver {
         cur.performRotation(RubiksCube.LEFT);
         cur.performRotation(RubiksCube.RIGHT);
         cur.performRotation(RubiksCube.BOTTOM);
-        cur.performRotation(RubiksCube.LEFT);
-        cur.performRotation(RubiksCube.LEFT);
-        cur.performRotation(RubiksCube.LEFT);
-        cur.performRotation(RubiksCube.BOTTOM);
-        cur.performRotation(RubiksCube.BOTTOM);
-        cur.performRotation(RubiksCube.BOTTOM);
-        cur.performRotation(RubiksCube.RIGHT);
-        cur.performRotation(RubiksCube.RIGHT);
-        cur.performRotation(RubiksCube.RIGHT);
+        cur.performRotationRev(RubiksCube.LEFT);
+        cur.performRotationRev(RubiksCube.BOTTOM);
+        cur.performRotationRev(RubiksCube.RIGHT);
         placeLeftCorner(cur);
     }
 
     void swapLayer3Edges(SequenceRecorder cur) {
         cur.performRotation(RubiksCube.BOTTOM);
-        cur.performRotation(RubiksCube.FRONT);
-        cur.performRotation(RubiksCube.FRONT);
-        cur.performRotation(RubiksCube.FRONT);
+        cur.performRotationRev(RubiksCube.FRONT);
         cur.performRotation(RubiksCube.LEFT);
         cur.performRotation(RubiksCube.BOTTOM);
-        cur.performRotation(RubiksCube.LEFT);
-        cur.performRotation(RubiksCube.LEFT);
-        cur.performRotation(RubiksCube.LEFT);
-        cur.performRotation(RubiksCube.BOTTOM);
-        cur.performRotation(RubiksCube.BOTTOM);
-        cur.performRotation(RubiksCube.BOTTOM);
+        cur.performRotationRev(RubiksCube.LEFT);
+        cur.performRotationRev(RubiksCube.BOTTOM);
         cur.performRotation(RubiksCube.FRONT);
     }
 

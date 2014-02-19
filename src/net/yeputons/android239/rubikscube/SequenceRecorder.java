@@ -81,6 +81,10 @@ public class SequenceRecorder {
             sequence.add(info.originalFace);
         }
     }
+    public void performRotationRev(int face) {
+        for (int i = 0; i < 3; i++)
+            performRotation(face);
+    }
 
     public void flipVer() {
         {
@@ -116,5 +120,9 @@ public class SequenceRecorder {
 
         currentRotation[RubiksCube.TOP].rotateCounterClockwise();
         currentRotation[RubiksCube.BOTTOM].rotateCounterClockwise();
+    }
+    public void rotateYRev() {
+        for (int i = 0; i < 3; i++)
+            rotateY();
     }
 }

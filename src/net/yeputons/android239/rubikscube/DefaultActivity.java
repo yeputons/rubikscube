@@ -1,6 +1,7 @@
 package net.yeputons.android239.rubikscube;
 
 import android.app.AlertDialog;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -178,10 +179,12 @@ public class DefaultActivity extends RendererActivity implements View.OnTouchLis
     }
 
     int seqPos;
+    int seqOps;
 
     private void buildCube() {
         sequence = new ArrayList<Integer>();
         seqPos = 0;
+        seqOps = 0;
 
         cube.stopRotation();
         SequenceRecorder cur = new SequenceRecorder(cube, sequence);
@@ -189,6 +192,7 @@ public class DefaultActivity extends RendererActivity implements View.OnTouchLis
         rubikSolver.buildLayer1();
         rubikSolver.buildLayer2();
         rubikSolver.buildLayer3();
+        Log.d("rubikscube", String.format("%d operations before optimizations", sequence.size()));
     }
 
     @Override
@@ -210,6 +214,7 @@ public class DefaultActivity extends RendererActivity implements View.OnTouchLis
             seqPos += nextEq;
         }
 
+        if (nextEq % 4 != 0) seqOps++;
         switch (nextEq % 4) {
             case 0: break;
             case 2:
@@ -218,6 +223,9 @@ public class DefaultActivity extends RendererActivity implements View.OnTouchLis
                 break;
             case 1: cube.startRotation(face,  1); break;
             case 3: cube.startRotation(face, -1); break;
+        }
+        if (seqPos >= sequence.size()) {
+            Log.d("rubikscube", String.format("%d operations after optimizations", seqOps));
         }
     }
 }

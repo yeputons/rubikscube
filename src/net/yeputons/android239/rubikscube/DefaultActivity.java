@@ -378,8 +378,8 @@ public class DefaultActivity extends RendererActivity implements View.OnTouchLis
                         found = true;
                     }
 
-                    while (cnt % 4 != 0) {
-                        cnt++;
+                    while (cnt > 0) {
+                        cnt--;
                         cur.rotateY();
                     }
                 }

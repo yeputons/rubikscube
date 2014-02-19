@@ -489,6 +489,19 @@ public class DefaultActivity extends RendererActivity implements View.OnTouchLis
             if (found) break;
             shiftLayer3Corners(cur);
         }
+
+        for (int i = 0; i < 4; i++, cur.performRotation(RubiksCube.BOTTOM)) {
+            while (cur.getColor(RubiksCube.BOTTOM, 0, 2) != bottomColor) {
+                cur.performRotation(RubiksCube.LEFT);
+                cur.performRotation(RubiksCube.FRONT);
+                cur.performRotation(RubiksCube.LEFT);
+                cur.performRotation(RubiksCube.LEFT);
+                cur.performRotation(RubiksCube.LEFT);
+                cur.performRotation(RubiksCube.FRONT);
+                cur.performRotation(RubiksCube.FRONT);
+                cur.performRotation(RubiksCube.FRONT);
+            }
+        }
     }
 
     private void shiftLayer3Corners(SequenceRecorder cur) {

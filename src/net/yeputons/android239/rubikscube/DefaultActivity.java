@@ -13,7 +13,6 @@ import min3d.vos.Light;
 import min3d.vos.Number3d;
 import static junit.framework.Assert.*;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -200,7 +199,11 @@ public class DefaultActivity extends RendererActivity implements View.OnTouchLis
         cube.stopRotation();
         SequenceRecorder cur = new SequenceRecorder(cube, sequence);
         buildLayer1(cur);
+        assertTrue(cur.isIdentity());
         buildLayer2(cur);
+        assertTrue(cur.isIdentity());
+        buildLayer3(cur);
+        assertTrue(cur.isIdentity());
     }
 
     private void buildLayer1(SequenceRecorder cur) {
@@ -398,6 +401,57 @@ public class DefaultActivity extends RendererActivity implements View.OnTouchLis
                 state = 0;
             }
         }
+    }
+
+    private void buildLayer3(SequenceRecorder cur) {
+        final int bottomColor = cur.getColor(RubiksCube.BOTTOM, 1, 1);
+        for (;;) {
+            int col = cur.getColor(RubiksCube.BOTTOM, 1, 0);
+            if (col == bottomColor) col = cur.getColor(RubiksCube.BACK, 1, 0);
+            if (col == cur.getColor(RubiksCube.BACK, 1, 1)) break;
+            cur.performRotation(RubiksCube.BOTTOM);
+        }
+        int l = cur.getColor(RubiksCube.LEFT, 1, 0), l0 = cur.getColor(RubiksCube.LEFT, 1, 1);
+        if (l == bottomColor) l = cur.getColor(RubiksCube.BOTTOM, 0, 1);
+
+        int f = cur.getColor(RubiksCube.FRONT, 1, 0), f0 = cur.getColor(RubiksCube.FRONT, 1, 1);
+        if (f == bottomColor) f = cur.getColor(RubiksCube.BOTTOM, 1, 2);
+
+        int r = cur.getColor(RubiksCube.RIGHT, 1, 0), r0 = cur.getColor(RubiksCube.RIGHT, 1, 1);
+        if (r == bottomColor) r = cur.getColor(RubiksCube.BOTTOM, 2, 1);
+
+        for (int step = 0; step < 3; step++) {
+            if (f == r0) {
+                swapLayer3Edges(cur);
+                int tmp = f; f = r; r = tmp;
+            } else if (l == r0 || l == f0) {
+                cur.rotateY();
+                swapLayer3Edges(cur);
+                cur.rotateY();
+                cur.rotateY();
+                cur.rotateY();
+                int tmp = f; f = l; l = tmp;
+            }
+        }
+        assertEquals(l0, l);
+        assertEquals(f0, f);
+        assertEquals(r0, r);
+    }
+
+    private void swapLayer3Edges(SequenceRecorder cur) {
+        cur.performRotation(RubiksCube.BOTTOM);
+        cur.performRotation(RubiksCube.FRONT);
+        cur.performRotation(RubiksCube.FRONT);
+        cur.performRotation(RubiksCube.FRONT);
+        cur.performRotation(RubiksCube.LEFT);
+        cur.performRotation(RubiksCube.BOTTOM);
+        cur.performRotation(RubiksCube.LEFT);
+        cur.performRotation(RubiksCube.LEFT);
+        cur.performRotation(RubiksCube.LEFT);
+        cur.performRotation(RubiksCube.BOTTOM);
+        cur.performRotation(RubiksCube.BOTTOM);
+        cur.performRotation(RubiksCube.BOTTOM);
+        cur.performRotation(RubiksCube.FRONT);
     }
 
     private void checkCross(SequenceRecorder cur) {
